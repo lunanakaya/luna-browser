@@ -276,15 +276,14 @@ LIRGeneratorARM::lowerModI(MMod *mod)
                 return false;
             return define(lir, mod);
         } 
-#if 0        
+
         // Disabled optimization, see bug 1027359
-        else if (shift < 31 && (1 << (shift+1)) - 1 == rhs) {
-            LModMaskI *lir = new LModMaskI(useRegister(mod->lhs()), temp(LDefinition::GENERAL), shift+1);
-            if (mod->fallible() && !assignSnapshot(lir))
-                return false;
-            return define(lir, mod);
-        }
-#endif
+        // else if (shift < 31 && (1 << (shift+1)) - 1 == rhs) {
+            // LModMaskI *lir = new LModMaskI(useRegister(mod->lhs()), temp(LDefinition::GENERAL), shift+1);
+            // if (mod->fallible() && !assignSnapshot(lir))
+                // return false;
+            // return define(lir, mod);
+        // }
     }
     LModI *lir = new LModI(useFixed(mod->lhs(), r0), use(mod->rhs(), r1),
                            tempFixed(r2), tempFixed(r3), temp(LDefinition::GENERAL));
