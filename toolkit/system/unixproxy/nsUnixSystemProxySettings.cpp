@@ -55,15 +55,17 @@ nsUnixSystemProxySettings::GetMainThreadOnly(bool *aMainThreadOnly)
 nsresult
 nsUnixSystemProxySettings::Init()
 {
+  mSchemeProxySettings.Init(5);
   /* Only use GSettings if that is a GNOME session, if GConf is not available proceed using *_PROXY environment variables. */
   const char* sessionType = PR_GetEnv("DESKTOP_SESSION");
   if (sessionType && !strcmp(sessionType, "gnome")) {
-    mSchemeProxySettings.Init(5);
-    mGConf = do_GetService(NS_GCONFSERVICE_CONTRACTID);
     mGSettings = do_GetService(NS_GSETTINGSSERVICE_CONTRACTID);
     if (mGSettings) {
       mGSettings->GetCollectionForSchema(NS_LITERAL_CSTRING("org.gnome.system.proxy"),
                                          getter_AddRefs(mProxySettings));
+    }
+    if (!mProxySettings) {
+      mGConf = do_GetService(NS_GCONFSERVICE_CONTRACTID);
     }
   }
   
