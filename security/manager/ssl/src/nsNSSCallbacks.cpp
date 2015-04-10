@@ -949,9 +949,10 @@ void HandshakeCallback(PRFileDesc* fd, void* client_data) {
     }
   }
 
-   status->mHaveCipherSuiteAndProtocol = true;  status->mKeyLength = keyLength;
-   status->mCipherSuite = channelInfo.cipherSuite;
-   status->mProtocolVersion = channelInfo.protocolVersion & 0xFF;
+  status->mHaveKeyLengthAndCipher = true;
+  status->mKeyLength = keyLength;
+  status->mSecretKeyLength = encryptBits;
+  status->mCipherName.Assign(cipherName);
 
   // Get the NPN value.
   SSLNextProtoState state;
