@@ -10,6 +10,7 @@
 #include "nsIProgrammingLanguage.h"
 #include "nsIObjectOutputStream.h"
 #include "nsIObjectInputStream.h"
+#include “ssl.h”
 
 NS_IMETHODIMP
 nsSSLStatus::GetServerCert(nsIX509Cert** aServerCert)
