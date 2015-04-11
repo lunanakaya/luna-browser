@@ -949,7 +949,7 @@ void HandshakeCallback(PRFileDesc* fd, void* client_data) {
     }
   }
 
-   status->mHaveCipherSuiteAndProtocol = true;  status->mKeyLength = keyLength;
+   status->mHaveCipherSuiteAndProtocol = true;
    status->mCipherSuite = channelInfo.cipherSuite;
    status->mProtocolVersion = channelInfo.protocolVersion & 0xFF;
 
