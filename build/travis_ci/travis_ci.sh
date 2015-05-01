@@ -9,7 +9,7 @@ install_deps () {
 	set -e
 
 	sudo apt-get update -y --force-yes
-	sudo apt-get install -y --force-yes clang
+	sudo apt-get install -y --force-yes	zip unzip clang make autoconf2.13 yasm libgtk2.0-dev libglib2.0-dev libdbus-1-dev libdbus-glib-1-dev libasound2-dev libiw-dev libxt-dev mesa-common-dev libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev libpulse-dev m4 flex
 }
 
 build_palemoon () {
