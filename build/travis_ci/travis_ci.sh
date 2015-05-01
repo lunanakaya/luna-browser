@@ -5,6 +5,15 @@ srcdir="$(readlink -e "$(dirname "$0")"/../..)"
 objdir="$(readlink -f "$srcdir/../pmbuild")"
 logfile="$srcdir/travis.log"
 
+make_swap () {
+	set -e
+
+	swap_img_file=$(mktemp --dry-run /tmp/swapXXXXXXXXX.img)
+	dd if=/dev/zero of="$swap_img_file" bs=1M count=6144
+	sudo mkswap "$swap_img_file"
+	sudo swapon "$swap_img_file"
+}	
+
 install_deps () {
 	set -e
 
@@ -90,6 +99,9 @@ case "$1" in
 		;;
 	build)
 		build_palemoon
+		;;
+	swap)
+		make_swap
 		;;
 	*)
 		echo "Unknown job type: $1"

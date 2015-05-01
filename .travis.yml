@@ -3,5 +3,6 @@ sudo: required
 
 before_install:
   - bash build/travis_ci/travis_ci.sh deps
+  - bash build/travis_ci/travis_ci.sh swap
 script:
   - bash build/travis_ci/travis_ci.sh build
