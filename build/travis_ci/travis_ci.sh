@@ -5,24 +5,18 @@ srcdir="$(readlink -e "$(dirname "$0")"/../..)"
 objdir="$(readlink -f "$srcdir/../pmbuild")"
 logfile="$srcdir/travis.log"
 
-make_swap () {
-	set -e
-
-	swap_img_file=$(mktemp --dry-run /tmp/swapXXXXXXXXX.img)
-	dd if=/dev/zero of="$swap_img_file" bs=1M count=6144
-	sudo mkswap "$swap_img_file"
-	sudo swapon "$swap_img_file"
-}	
-
 install_deps () {
 	set -e
 
 	sudo apt-get update -y --force-yes
-	sudo apt-get install -y --force-yes	zip unzip g++ make autoconf2.13 yasm libgtk2.0-dev libglib2.0-dev libdbus-1-dev libdbus-glib-1-dev libasound2-dev libiw-dev libxt-dev mesa-common-dev libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev libpulse-dev m4 flex
+	sudo apt-get install -y --force-yes	zip unzip g++-4.7 gcc-4.7 make autoconf2.13 yasm libgtk2.0-dev libglib2.0-dev libdbus-1-dev libdbus-glib-1-dev libasound2-dev libiw-dev libxt-dev mesa-common-dev libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev libpulse-dev m4 flex
 }
 
 build_palemoon () {
 	set -e
+
+	export CC="gcc-4.7"
+	export CXX="g++-4.7"
 
 	case $(uname -m) in
 		i*86)
@@ -99,9 +93,6 @@ case "$1" in
 		;;
 	build)
 		build_palemoon
-		;;
-	swap)
-		make_swap
 		;;
 	*)
 		echo "Unknown job type: $1"
