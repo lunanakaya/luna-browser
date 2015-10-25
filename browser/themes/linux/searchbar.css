@@ -51,6 +51,12 @@
   height: 12px;
 }
 
+/* TODO implement indicator for availibility of search engines.
+.searchbar-engine-button[addengines="true"] > .button-box {
+  background: transparent url(chrome://browser/skin/Search-addengines.png) no-repeat right center;
+}
+*/
+
 /* Search go button */
 .search-go-container {
   -moz-box-align: center;
