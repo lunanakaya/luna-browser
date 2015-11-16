@@ -224,8 +224,8 @@
               label="&cmd.openParentFolder.label;"
               key="key_placesCmd_openParentFolder"
               accesskey="&cmd.openParentFolder.accesskey;"
-              selectiontype="single"
               selection="bookmark"
+              selectiontype="single"
               forcehideselection="livemarkChild|livemark/feedURI|PlacesOrganizer/OrganizerQuery"/>
     <menuseparator id="placesContext_parentFolderSeparator"/>
     <menuitem id="placesContext_show:info"
