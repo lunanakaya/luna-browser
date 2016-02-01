@@ -34,7 +34,7 @@ libs:: $(PEPTEST_EXTRAS)
 libs:: $(PEPTEST_TESTS)
 	$(PYTHON) $(topsrcdir)/config/nsinstall.py $^ $(_DEST_DIR)
 
-stage-package: PKG_STAGE = $(DIST)/test-package-stage
+stage-package: PKG_STAGE = $(DIST)/test-stage
 stage-package:
 	$(NSINSTALL) -D $(PKG_STAGE)/peptest
 	@(cd $(srcdir) && tar $(TAR_CREATE_FLAGS) - $(PEPTEST_HARNESS)) | (cd $(PKG_STAGE)/peptest && tar -xf -)

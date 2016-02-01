@@ -18,7 +18,7 @@ DISABLED_EXTRA_COMPONENTS = FeedProcessor.js FeedProcessor.manifest
 
 include $(topsrcdir)/config/rules.mk
 
-ABS_SRCDIR := $(call core_abspath,$(srcdir))
+ABS_SRCDIR := $(abspath $(srcdir))
 ifeq ($(OS_ARCH),WINNT)
 
 ABS_DEPTH := $(call core_abspath,$(DEPTH))

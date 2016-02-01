@@ -97,8 +97,8 @@ endif # MOZ_NATIVE_NSPR
 MAKE_JSSHELL  = $(ZIP) -9j $(PKG_JSSHELL) $(JSSHELL_BINS)
 endif # LIBXUL_SDK
 
-_ABS_DIST = $(call core_abspath,$(DIST))
-JARLOG_DIR = $(call core_abspath,$(DEPTH)/jarlog/)
+_ABS_DIST = $(abspath $(DIST))
+JARLOG_DIR = $(abspath $(DEPTH)/jarlog/)
 JARLOG_FILE_AB_CD = $(JARLOG_DIR)/$(AB_CD).log
 
 TAR_CREATE_FLAGS := --exclude=.mkdir.done $(TAR_CREATE_FLAGS)
@@ -352,14 +352,14 @@ ABI_DIR = armeabi
 endif
 endif
 
-GOANNA_APP_AP_PATH = $(call core_abspath,$(DEPTH)/mobile/android/base)
+GOANNA_APP_AP_PATH = $(abspath,$(DEPTH)/mobile/android/base)
 
 ifdef ENABLE_TESTS
 INNER_ROBOCOP_PACKAGE=echo
 ifeq ($(MOZ_BUILD_APP),mobile/android)
 UPLOAD_EXTRA_FILES += robocop.apk
 UPLOAD_EXTRA_FILES += fennec_ids.txt
-ROBOCOP_PATH = $(call core_abspath,$(_ABS_DIST)/../build/mobile/robocop)
+ROBOCOP_PATH = $(abspath,$(_ABS_DIST)/../build/mobile/robocop)
 # Robocop and Fennec need to be signed with the same key, which means
 # release signing them both.
 INNER_ROBOCOP_PACKAGE= \

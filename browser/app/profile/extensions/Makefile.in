@@ -8,7 +8,7 @@ topsrcdir  = @top_srcdir@
 srcdir     = @srcdir@
 VPATH      = @srcdir@
 
-DISTROEXT = $(call core_abspath,$(FINAL_TARGET))/distribution/extensions
+DISTROEXT = $(abspath $(FINAL_TARGET))/distribution/extensions
 
 include $(DEPTH)/config/autoconf.mk
 include $(topsrcdir)/config/config.mk
@@ -40,7 +40,7 @@ include $(topsrcdir)/config/rules.mk
 $(all_xpis): $(DISTROEXT)/%.xpi: $(call mkdir_deps,$(DISTROEXT)) libs-%
 	cd $* && \
 	$(ZIP) -r9XD $@ * -x \*.in -x \*.mkdir.done
-	cd $(call core_abspath,$(srcdir)/$*) && \
+	cd $(abspath $(srcdir)/$*) && \
 	$(ZIP) -r9XD $@ * -x \*.in -x \*.mkdir.done
 
 .PHONY: $(all_xpis:.xpi=)

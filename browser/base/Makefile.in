@@ -12,7 +12,7 @@ include $(DEPTH)/config/autoconf.mk
 
 include $(topsrcdir)/config/config.mk
 
-abs_srcdir = $(call core_abspath,$(srcdir))
+abs_srcdir = $(abspath $(srcdir))
 
 CHROME_DEPS += $(abs_srcdir)/content/overrides/app-license.html
 

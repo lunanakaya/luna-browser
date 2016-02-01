@@ -34,15 +34,15 @@ RUN_MOCHITEST_B2G_DESKTOP = \
   $(PYTHON) _tests/testing/mochitest/runtestsb2g.py --autorun --close-when-done \
     --console-level=INFO --log-file=./$@.log --file-level=INFO \
     --desktop --profile ${GAIA_PROFILE_DIR} \
-    --failure-file=$(call core_abspath,_tests/testing/mochitest/makefailures.json) \
+    --failure-file=$(abspath _tests/testing/mochitest/makefailures.json) \
     $(TEST_PATH_ARG) $(EXTRA_TEST_ARGS)
 
 RUN_MOCHITEST = \
   rm -f ./$@.log && \
   $(PYTHON) _tests/testing/mochitest/runtests.py --autorun --close-when-done \
     --console-level=INFO --log-file=./$@.log --file-level=INFO \
-    --failure-file=$(call core_abspath,_tests/testing/mochitest/makefailures.json) \
-    --testing-modules-dir=$(call core_abspath,_tests/modules) \
+    --failure-file=$(abspath _tests/testing/mochitest/makefailures.json) \
+    --testing-modules-dir=$(abspath _tests/modules) \
     --extra-profile-file=$(DIST)/plugins \
     $(SYMBOLS_PATH) $(TEST_PATH_ARG) $(EXTRA_TEST_ARGS)
 
@@ -51,7 +51,7 @@ RERUN_MOCHITEST = \
   $(PYTHON) _tests/testing/mochitest/runtests.py --autorun --close-when-done \
     --console-level=INFO --log-file=./$@.log --file-level=INFO \
     --run-only-tests=makefailures.json \
-    --testing-modules-dir=$(call core_abspath,_tests/modules) \
+    --testing-modules-dir=$(abspath _tests/modules) \
     --extra-profile-file=$(DIST)/plugins \
     $(SYMBOLS_PATH) $(TEST_PATH_ARG) $(EXTRA_TEST_ARGS)
 
@@ -60,7 +60,7 @@ RUN_MOCHITEST_REMOTE = \
   $(PYTHON) _tests/testing/mochitest/runtestsremote.py --autorun --close-when-done \
     --console-level=INFO --log-file=./$@.log --file-level=INFO $(DM_FLAGS) --dm_trans=$(DM_TRANS) \
     --app=$(TEST_PACKAGE_NAME) --deviceIP=${TEST_DEVICE} --xre-path=${MOZ_HOST_BIN} \
-    --testing-modules-dir=$(call core_abspath,_tests/modules) --httpd-path=. \
+    --testing-modules-dir=$(abspath _tests/modules) --httpd-path=. \
     $(SYMBOLS_PATH) $(TEST_PATH_ARG) $(EXTRA_TEST_ARGS)
 
 RUN_MOCHITEST_ROBOCOP = \
@@ -263,12 +263,12 @@ crashtest-ipc-gpu:
 	$(call RUN_REFTEST,"$(topsrcdir)/$(TEST_PATH)" $(OOP_CONTENT) $(GPU_RENDERING))
 	$(CHECK_TEST_ERROR)
 
-jstestbrowser: TESTS_PATH?=test-package-stage/jsreftest/tests/
+jstestbrowser: TESTS_PATH?=test-stage/jsreftest/tests/
 jstestbrowser:
 	$(MAKE) -C $(DEPTH)/config
 	$(MAKE) -C $(DEPTH)/js/src/config
 	$(MAKE) stage-jstests
-	$(call RUN_REFTEST,"$(DIST)/$(TESTS_PATH)/jstests.list" --extra-profile-file=$(DIST)/test-package-stage/jsreftest/tests/user.js)
+	$(call RUN_REFTEST,'$(DIST)/$(TESTS_PATH)/jstests.list' --extra-profile-file=$(DIST)/test-stage/jsreftest/tests/user.js)
 	$(CHECK_TEST_ERROR)
 
 GARBAGE += $(addsuffix .log,$(MOCHITESTS) reftest crashtest jstestbrowser)
@@ -285,9 +285,9 @@ xpcshell-tests:
 	  --manifest=$(DEPTH)/_tests/xpcshell/xpcshell.ini \
 	  --build-info-json=$(DEPTH)/mozinfo.json \
 	  --no-logfiles \
-	  --tests-root-dir=$(call core_abspath,_tests/xpcshell) \
-	  --testing-modules-dir=$(call core_abspath,_tests/modules) \
-	  --xunit-file=$(call core_abspath,_tests/xpcshell/results.xml) \
+	  --tests-root-dir=$(abspath _tests/xpcshell) \
+	  --testing-modules-dir=$(abspath _tests/modules) \
+	  --xunit-file=$(abspath _tests/xpcshell/results.xml) \
 	  --xunit-suite-name=xpcshell \
           $(SYMBOLS_PATH) \
 	  $(TEST_PATH_ARG) $(EXTRA_TEST_ARGS) \
@@ -332,7 +332,7 @@ xpcshell-tests-remote:
 	    --manifest=$(DEPTH)/_tests/xpcshell/xpcshell_android.ini \
 	    --build-info-json=$(DEPTH)/mozinfo.json \
 	    --no-logfiles \
-	    --testing-modules-dir=$(call core_abspath,_tests/modules) \
+	    --testing-modules-dir=$(abspath _tests/modules) \
 	    --dm_trans=$(DM_TRANS) \
 	    --deviceIP=${TEST_DEVICE} \
 	    --objdir=$(DEPTH) \
@@ -388,8 +388,8 @@ pgo-profile-run:
 # Package up the tests and test harnesses
 include $(topsrcdir)/toolkit/mozapps/installer/package-name.mk
 
-ifndef UNIVERSAL_BINARY
-PKG_STAGE = $(DIST)/test-package-stage
+PKG_STAGE = $(DIST)/test-stage
+
 package-tests: \
   stage-config \
   stage-mochitest \
@@ -403,19 +403,13 @@ package-tests: \
   stage-modules \
   stage-marionette \
   $(NULL)
-else
-# This staging area has been built for us by universal/flight.mk
-PKG_STAGE = $(DIST)/universal/test-package-stage
-endif
 
 package-tests:
 	@rm -f "$(DIST)/$(PKG_PATH)$(TEST_PACKAGE)"
-ifndef UNIVERSAL_BINARY
 	$(NSINSTALL) -D $(DIST)/$(PKG_PATH)
-endif
 	find $(PKG_STAGE) -name "*.pyc" -exec rm {} \;
 	cd $(PKG_STAGE) && \
-	  zip -rq9D "$(call core_abspath,$(DIST)/$(PKG_PATH)$(TEST_PACKAGE))" \
+	  zip -rq9D "$(abspath $(DIST)/$(PKG_PATH)$(TEST_PACKAGE))" \
 	  * -x \*/.mkdir.done
 
 ifeq ($(MOZ_WIDGET_TOOLKIT),android)
