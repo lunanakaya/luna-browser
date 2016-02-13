@@ -582,12 +582,23 @@ var allTabs = {
     if (this._initiated)
       return;
     this._initiated = true;
+    var show_pinned = true;
 
     tabPreviews.init();
 
-    Array.forEach(gBrowser.tabs, function (tab) {
-      this._addPreview(tab);
-    }, this);
+    if (gPrefService.getBoolPref("browser.allTabs.hide_pinned")) {
+      Array.forEach(gBrowser.tabs, function (tab) {
+        if (!tab.pinned) {
+	  show_pinned = false;
+	  this._addPreview(tab);
+	}
+      }, this);
+    }
+    if (show_pinned) {
+      Array.forEach(gBrowser.tabs, function (tab) {
+        this._addPreview(tab);
+      }, this);
+    }
 
     gBrowser.tabContainer.addEventListener("TabOpen", this, false);
     gBrowser.tabContainer.addEventListener("TabAttrModified", this, false);
