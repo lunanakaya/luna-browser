@@ -516,11 +516,7 @@ nsScriptSecurityManager::XSSFilterPermitsJSAction(JSContext *cx, JSString *str)
                  "XSS: Failed to get nsIPrincipal from js context");
 
     if (!subjectPrincipal) {
-        // See bug 553448 for discussion of this case.
-        NS_ASSERTION(!JS_GetSecurityCallbacks(js::GetRuntime(cx))->findObjectPrincipals,
-                     "XSS: Should have been able to find subject principal."
-                     "Reluctantly allowing script.");
-        return true;
+      return false;
     }
 
     nsRefPtr<nsXSSFilter> xss;
