@@ -179,7 +179,7 @@ enum TableAction {
   TABLE_ACTION_DROP      // Drop the table
 };
 
-class OTSContext {
+class OTS_API OTSContext {
   public:
     OTSContext() {}
     virtual ~OTSContext() {}
