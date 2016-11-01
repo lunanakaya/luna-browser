@@ -321,17 +321,6 @@ let PermissionDefaults = {
     Services.prefs.setBoolPref("dom.disable_open_during_load", value);
   },
 
-  get plugins() {
-    if (Services.prefs.getBoolPref("plugins.click_to_play")) {
-      return this.UNKNOWN;
-    }
-    return this.ALLOW;
-  },
-  set plugins(aValue) {
-    let value = (aValue != this.ALLOW);
-    Services.prefs.setBoolPref("plugins.click_to_play", value);
-  },
-  
   get fullscreen() {
     if (!Services.prefs.getBoolPref("full-screen-api.enabled")) {
       return this.DENY;
@@ -380,7 +369,7 @@ let AboutPermissions = {
    *
    * Potential future additions: "sts/use", "sts/subd"
    */
-  _supportedPermissions: ["password", "cookie", "geo", "indexedDB", "popup", "plugins", "fullscreen"],
+  _supportedPermissions: ["password", "cookie", "geo", "indexedDB", "popup", "fullscreen"],
 
   /**
    * Permissions that don't have a global "Allow" option.
@@ -390,7 +379,7 @@ let AboutPermissions = {
   /**
    * Permissions that don't have a global "Deny" option.
    */
-  _noGlobalDeny: ["plugins"],
+  _noGlobalDeny: [],
 
   _stringBundle: Services.strings.
                  createBundle("chrome://browser/locale/preferences/aboutPermissions.properties"),
@@ -412,7 +401,6 @@ let AboutPermissions = {
     Services.prefs.addObserver("geo.enabled", this, false);
     Services.prefs.addObserver("dom.indexedDB.enabled", this, false);
     Services.prefs.addObserver("dom.disable_open_during_load", this, false);
-    Services.prefs.addObserver("plugins.click_to_play", this, false);
     Services.prefs.addObserver("full-screen-api.enabled", this, false);
 
     Services.obs.addObserver(this, "perm-changed", false);
@@ -434,7 +422,6 @@ let AboutPermissions = {
       Services.prefs.removeObserver("geo.enabled", this, false);
       Services.prefs.removeObserver("dom.indexedDB.enabled", this, false);
       Services.prefs.removeObserver("dom.disable_open_during_load", this, false);
-      Services.prefs.removeObserver("plugins.click_to_play", this, false);
       Services.prefs.removeObserver("full-screen-api.enabled", this, false);
 
       Services.obs.removeObserver(this, "perm-changed");
@@ -575,18 +562,17 @@ let AboutPermissions = {
       itemCnt++;
     }, this);
 
-    let (enumerator = Services.perms.enumerator) {
-      while (enumerator.hasMoreElements()) {
-        if (itemCnt % this.LIST_BUILD_CHUNK == 0) {
-          yield true;
-        }
-        let permission = enumerator.getNext().QueryInterface(Ci.nsIPermission);
-        // Only include sites with exceptions set for supported permission types.
-        if (this._supportedPermissions.indexOf(permission.type) != -1) {
-          this.addHost(permission.host);
-        }
-        itemCnt++;
+    let enumerator = Services.perms.enumerator;
+    while (enumerator.hasMoreElements()) {
+      if (itemCnt % this.LIST_BUILD_CHUNK == 0) {
+        yield true;
       }
+      let permission = enumerator.getNext().QueryInterface(Ci.nsIPermission);
+      // Only include sites with exceptions set for supported permission types.
+      if (this._supportedPermissions.indexOf(permission.type) != -1) {
+        this.addHost(permission.host);
+      }
+      itemCnt++;
     }
 
     yield false;
@@ -678,7 +664,8 @@ let AboutPermissions = {
    *        The host string corresponding to the site to delete.
    */
   deleteFromSitesList: function(aHost) {
-    for each (let site in this._sites) {
+    for (let host in this._sites) {
+      let site = this._sites[host];
       if (site.host.hasRootDomain(aHost)) {
         if (site == this._selectedSite) {
           // Replace site-specific interface with "All Sites" interface.
@@ -758,18 +745,11 @@ let AboutPermissions = {
     if (!this._selectedSite) {
       // If there is no selected site, we are updating the default permissions interface.
       permissionValue = PermissionDefaults[aType];
-      if (aType == "plugins")
-        document.getElementById("plugins-pref-item").hidden = false;
-      else if (aType == "cookie")
+      if (aType == "cookie")
 	// cookie-9 corresponds to ALLOW_FIRST_PARTY_ONLY, which is reserved
 	// for site-specific preferences only.
 	document.getElementById("cookie-9").hidden = true;
     } else {
-      if (aType == "plugins") {
-        document.getElementById("plugins-pref-item").hidden =
-          !Services.prefs.getBoolPref("plugins.click_to_play");
-        return;
-      }
       if (aType == "cookie")
         document.getElementById("cookie-9").hidden = false;
       let result = {};
