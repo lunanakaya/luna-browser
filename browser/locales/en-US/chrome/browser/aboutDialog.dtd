@@ -37,6 +37,9 @@
 <!-- LOCALIZATION NOTE (bottomLinks.privacy): This is a link title that links to https://www.mozilla.org/legal/privacy/. -->
 <!ENTITY bottomLinks.privacy        "Privacy Policy">
 
+<!-- LOCALIZATION NOTE (bottomLinks.releaseNotes): This is a link title that links to http://www.palemoon.org/releasenotes-ng.shtml. -->
+<!ENTITY bottomLinks.releaseNotes   "Release notes">
+
 <!-- LOCALIZATION NOTE (update.checkingForUpdates): try to make the localized text short (see bug 596813 for screenshots). -->
 <!ENTITY update.checkingForUpdates  "Checking for updates…">
 <!-- LOCALIZATION NOTE (update.checkingAddonCompat): try to make the localized text short (see bug 596813 for screenshots). -->
