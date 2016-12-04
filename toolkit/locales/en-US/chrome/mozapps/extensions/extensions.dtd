@@ -210,6 +210,10 @@
 <!ENTITY addon.loadingReleaseNotes.label      "Loading…">
 <!ENTITY addon.errorLoadingReleaseNotes.label "Sorry, but there was an error loading the release notes.">
 
+<!ENTITY addon.nativeIndicator.glyph          "•">
+<!ENTITY addon.nativeIndicator.tooltip        "Blue dot means a native extension directly targeting Pale Moon,
+while orange dot means a non-native extension targeting Firefox, which is still possible to run.">
+
 <!ENTITY addon.createdBy.label                "By ">
 
 <!ENTITY eula.title                           "End-User License Agreement">
