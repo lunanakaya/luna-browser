@@ -585,6 +585,8 @@ add_task(function* test_savedSessionClientID() {
 
   yield TelemetryFile.loadSavedPings();
   Assert.equal(TelemetryFile.pingsLoaded, 1);
+  let ping = TelemetryFile.popPendingPings().next();
+  Assert.equal(ping.value.payload.clientID, gDataReportingClientID);
 });
 
 add_task(function* stopServer(){
