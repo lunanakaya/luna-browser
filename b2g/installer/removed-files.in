@@ -30,7 +30,6 @@
   mozcpp19.dll
 #endif
 @DIR_MACOS@defaults/preferences/services-sync.js
-@DIR_MACOS@defaults/preferences/healthreport-prefs.js
 @DIR_MACOS@components/dom_sms.xpt
 @DIR_MACOS@components/dom_webspeech.xpt
 #ifdef MOZ_FOLD_LIBS

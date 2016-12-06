@@ -340,8 +340,6 @@ class FirefoxProfile(Profile):
                    'browser.tabs.warnOnClose' : False,
                    # Don't warn when exiting the browser
                    'browser.warnOnQuit': False,
-                   # Don't send Firefox health reports to the production server
-                   'datareporting.healthreport.documentServerURI' : 'http://%(server)s/healthreport/',
                    # Only install add-ons from the profile and the application scope
                    # Also ensure that those are not getting disabled.
                    # see: https://developer.mozilla.org/en/Installing_extensions
@@ -381,8 +379,6 @@ class MetroFirefoxProfile(Profile):
                    'browser.sessionstore.resume_from_crash': False,
                    # Don't check for the default web browser during startup
                    'browser.shell.checkDefaultBrowser' : False,
-                   # Don't send Firefox health reports to the production server
-                   'datareporting.healthreport.documentServerURI' : 'http://%(server)s/healthreport/',
                    # Enable extensions
                    'extensions.defaultProviders.enabled' : True,
                    # Only install add-ons from the profile and the application scope

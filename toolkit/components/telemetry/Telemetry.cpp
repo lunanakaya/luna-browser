@@ -1638,7 +1638,6 @@ mFailedLockCount(0)
     "downloads.sqlite",
     "extensions.sqlite",
     "formhistory.sqlite",
-    "healthreport.sqlite",
     "index.sqlite",
     "netpredictions.sqlite",
     "permissions.sqlite",
