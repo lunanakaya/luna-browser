@@ -865,6 +865,7 @@ this.PlacesDBUtils = {
 
   /**
    * Collects telemetry data.
+   *
    * Results will be reported to Telemetry.
    *
    * @param [optional] aTasks
