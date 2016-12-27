@@ -602,13 +602,13 @@ function resolveAsFile(path) {
   return null;
 }
 
-// Attempts to load `path/package.json`'s `main` entry,
+// Attempts to load `path/extension.json`'s `main` entry,
 // followed by `path/index.js`, or `undefined` otherwise
 function resolveAsDirectory(path) {
   try {
-    // If `path/package.json` exists, parse the `main` entry
+    // If `path/extension.json` exists, parse the `main` entry
     // and attempt to load that
-    let manifestPath = addTrailingSlash(path) + 'package.json';
+    let manifestPath = addTrailingSlash(path) + 'extension.json';
 
     let main = (urlCache.exists(manifestPath) &&
                 getManifestMain(JSON.parse(readURI(manifestPath))));
