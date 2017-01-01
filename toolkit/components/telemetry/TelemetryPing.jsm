@@ -28,7 +28,6 @@ const PREF_ENABLED = PREF_BRANCH + "enabled";
 const PREF_LOG_LEVEL = PREF_BRANCH_LOG + "level";
 const PREF_LOG_DUMP = PREF_BRANCH_LOG + "dump";
 const PREF_CACHED_CLIENTID = PREF_BRANCH + "cachedClientID"
-const PREF_FHR_UPLOAD_ENABLED = "datareporting.healthreport.uploadEnabled";
 
 // Delay before intializing telemetry (ms)
 const TELEMETRY_DELAY = 60000;
@@ -358,17 +357,8 @@ let Impl = {
         yield this.send("overdue-flush");
       }
 
-      if ("@mozilla.org/datareporting/service;1" in Cc) {
-        let drs = Cc["@mozilla.org/datareporting/service;1"]
-                    .getService(Ci.nsISupports)
-                    .wrappedJSObject;
-        this._clientID = yield drs.getClientID();
-        // Update cached client id.
-        Preferences.set(PREF_CACHED_CLIENTID, this._clientID);
-      } else {
-        // Nuke potentially cached client id.
-        Preferences.reset(PREF_CACHED_CLIENTID);
-      }
+      // Nuke potentially cached client id.
+      Preferences.reset(PREF_CACHED_CLIENTID);
 
       Telemetry.asyncFetchTelemetryData(function () {});
       deferred.resolve();

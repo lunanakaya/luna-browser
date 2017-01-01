@@ -14,14 +14,8 @@ GARBAGE		+= greprefs.js
 # TODO bug 813259 external files should be defined near their location in the source tree.
 grepref_files = $(topsrcdir)/netwerk/base/security-prefs.js $(srcdir)/init/all.js
 
-ifdef MOZ_DATA_REPORTING
-grepref_files += $(topsrcdir)/services/datareporting/datareporting-prefs.js
-endif
-
 ifdef MOZ_SERVICES_HEALTHREPORT
-ifneq (android,$(MOZ_WIDGET_TOOLKIT))
-grepref_files += $(topsrcdir)/services/healthreport/healthreport-prefs.js
-else
+ifeq (android,$(MOZ_WIDGET_TOOLKIT))
 grepref_files += $(topsrcdir)/mobile/android/chrome/content/healthreport-prefs.js
 endif
 endif

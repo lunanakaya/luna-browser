@@ -46,12 +46,6 @@ let gNumberOfThreadsLaunched = 0;
 
 const PREF_BRANCH = "toolkit.telemetry.";
 const PREF_ENABLED = PREF_BRANCH + "enabled";
-const PREF_FHR_UPLOAD_ENABLED = "datareporting.healthreport.uploadEnabled";
-const PREF_FHR_SERVICE_ENABLED = "datareporting.healthreport.service.enabled";
-
-const HAS_DATAREPORTINGSERVICE = "@mozilla.org/datareporting/service;1" in Cc;
-const SESSION_RECORDER_EXPECTED = HAS_DATAREPORTINGSERVICE &&
-                                  Preferences.get(PREF_FHR_SERVICE_ENABLED, true);
 
 const Telemetry = Cc["@mozilla.org/base/telemetry;1"].getService(Ci.nsITelemetry);
 
@@ -59,11 +53,6 @@ let gHttpServer = new HttpServer();
 let gServerStarted = false;
 let gRequestIterator = null;
 let gDataReportingClientID = null;
-
-XPCOMUtils.defineLazyGetter(this, "gDatareportingService",
-  () => Cc["@mozilla.org/datareporting/service;1"]
-          .getService(Ci.nsISupports)
-          .wrappedJSObject);
 
 function sendPing () {
   TelemetrySession.gatherStartup();
@@ -188,13 +177,6 @@ function checkPayloadInfo(payload, reason) {
     do_check_true(payload.info.revision.startsWith("http"));
   }
 
-  if ("@mozilla.org/datareporting/service;1" in Cc &&
-      Services.prefs.getBoolPref(PREF_FHR_UPLOAD_ENABLED)) {
-    do_check_true("clientID" in payload);
-    do_check_neq(payload.clientID, null);
-    do_check_eq(payload.clientID, gDataReportingClientID);
-  }
-
   try {
     // If we've not got nsIGfxInfoDebug, then this will throw and stop us doing
     // this test.
@@ -229,7 +211,7 @@ function checkPayload(request, payload, reason, successfulPings) {
   do_check_true(payload.simpleMeasurements.maximalNumberOfConcurrentThreads >= gNumberOfThreadsLaunched);
 
   let activeTicks = payload.simpleMeasurements.activeTicks;
-  do_check_true(SESSION_RECORDER_EXPECTED ? activeTicks >= 0 : activeTicks == -1);
+  do_check_true(activeTicks == -1);
 
   do_check_eq(payload.simpleMeasurements.failedProfileLockCount,
               FAILED_PROFILE_LOCK_ATTEMPTS);
@@ -448,14 +430,6 @@ function run_test() {
   createAppInfo("xpcshell@tests.mozilla.org", "XPCShell", "1", "1.9.2");
 
   Services.prefs.setBoolPref(PREF_ENABLED, true);
-  Services.prefs.setBoolPref(PREF_FHR_UPLOAD_ENABLED, true);
-
-  // Send the needed startup notifications to the datareporting service
-  // to ensure that it has been initialized.
-  if (HAS_DATAREPORTINGSERVICE) {
-    gDatareportingService.observe(null, "app-startup", null);
-    gDatareportingService.observe(null, "profile-after-change", null);
-  }
 
   // Make it look like we've previously failed to lock a profile a couple times.
   write_fake_failedprofilelocks_file();
@@ -507,26 +481,8 @@ add_task(function* asyncSetup() {
   yield TelemetrySession.setup();
   yield TelemetryPing.setup();
 
-  if (HAS_DATAREPORTINGSERVICE) {
-    // force getSessionRecorder()==undefined to check the payload's activeTicks
-    gDatareportingService.simulateNoSessionRecorder();
-  }
-
   // When no DRS or no DRS.getSessionRecorder(), activeTicks should be -1.
   do_check_eq(TelemetrySession.getPayload().simpleMeasurements.activeTicks, -1);
-
-  if (HAS_DATAREPORTINGSERVICE) {
-    // Restore normal behavior for getSessionRecorder()
-    gDatareportingService.simulateRestoreSessionRecorder();
-
-    gDataReportingClientID = yield gDatareportingService.getClientID();
-
-    // We should have cached the client id now. Lets confirm that by
-    // checking the client id before the async ping setup is finished.
-    let promisePingSetup = TelemetryPing.reset();
-    do_check_eq(TelemetryPing.clientID, gDataReportingClientID);
-    yield promisePingSetup;
-  }
 });
 
 // Ensure that not overwriting an existing file fails silently

@@ -355,7 +355,6 @@ class RemoteReftest(RefTest):
         prefs["toolkit.telemetry.prompted"] = 999
         prefs["toolkit.telemetry.notifiedOptOut"] = 999
         prefs["reftest.uri"] = "%s" % reftestlist
-        prefs["datareporting.policy.dataSubmissionPolicyBypassAcceptance"] = True
 
         # Point the url-classifier to the local testing server for fast failures
         prefs["browser.safebrowsing.gethashURL"] = "http://127.0.0.1:8888/safebrowsing-dummy/gethash"

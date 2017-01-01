@@ -40,7 +40,6 @@ const PREF_SERVER = PREF_BRANCH + "server";
 const PREF_ENABLED = PREF_BRANCH + "enabled";
 const PREF_PREVIOUS_BUILDID = PREF_BRANCH + "previousBuildID";
 const PREF_CACHED_CLIENTID = PREF_BRANCH + "cachedClientID"
-const PREF_FHR_UPLOAD_ENABLED = "datareporting.healthreport.uploadEnabled";
 const PREF_ASYNC_PLUGIN_INIT = "dom.ipc.plugins.asyncInit";
 
 const MESSAGE_TELEMETRY_PAYLOAD = "Telemetry:Payload";
@@ -378,16 +377,6 @@ let Impl = {
     }
 
     ret.activeTicks = -1;
-    if ("@mozilla.org/datareporting/service;1" in Cc) {
-      let drs = Cc["@mozilla.org/datareporting/service;1"]
-                  .getService(Ci.nsISupports)
-                  .wrappedJSObject;
-
-      let sr = drs.getSessionRecorder();
-      if (sr) {
-        ret.activeTicks = sr.activeTicks;
-      }
-    }
 
     ret.pingsOverdue = TelemetryFile.pingsOverdue;
     ret.pingsDiscarded = TelemetryFile.pingsDiscarded;
@@ -810,11 +799,6 @@ let Impl = {
         (Object.keys(this._slowSQLStartup.mainThread).length ||
          Object.keys(this._slowSQLStartup.otherThreads).length)) {
       payloadObj.slowSQLStartup = this._slowSQLStartup;
-    }
-
-    let clientID = TelemetryPing.clientID;
-    if (clientID && Preferences.get(PREF_FHR_UPLOAD_ENABLED, false)) {
-      payloadObj.clientID = clientID;
     }
 
     if (this._childTelemetry.length) {
