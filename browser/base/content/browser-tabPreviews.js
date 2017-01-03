@@ -582,17 +582,33 @@ var allTabs = {
     if (this._initiated)
       return;
     this._initiated = true;
+    var show_pinned = true;
 
     tabPreviews.init();
 
-    Array.forEach(gBrowser.tabs, function (tab) {
-      this._addPreview(tab);
-    }, this);
+    if (gPrefService.getBoolPref("browser.allTabs.hide_pinned")) {
+      Array.forEach(gBrowser.tabs, function (tab) {
+        if (!tab.pinned) {
+	  show_pinned = false;
+	  this._addPreview(tab);
+	}
+      }, this);
+    }
+    if (show_pinned) {
+      Array.forEach(gBrowser.tabs, function (tab) {
+        this._addPreview(tab);
+      }, this);
+    }
 
     gBrowser.tabContainer.addEventListener("TabOpen", this, false);
     gBrowser.tabContainer.addEventListener("TabAttrModified", this, false);
     gBrowser.tabContainer.addEventListener("TabMove", this, false);
     gBrowser.tabContainer.addEventListener("TabClose", this, false);
+
+    if (gPrefService.getBoolPref("browser.allTabs.hide_pinned")) {
+      gBrowser.tabContainer.addEventListener("TabPinned", this, false);
+      gBrowser.tabContainer.addEventListener("TabUnpinned", this, false);
+    }
   },
 
   uninit: function allTabs_uninit() {
@@ -603,6 +619,8 @@ var allTabs = {
     gBrowser.tabContainer.removeEventListener("TabAttrModified", this, false);
     gBrowser.tabContainer.removeEventListener("TabMove", this, false);
     gBrowser.tabContainer.removeEventListener("TabClose", this, false);
+    gBrowser.tabContainer.removeEventListener("TabPinned", this, false);
+    gBrowser.tabContainer.removeEventListener("TabUnpinned", this, false);
 
     while (this.container.hasChildNodes())
       this.container.removeChild(this.container.firstChild);
@@ -754,6 +772,19 @@ var allTabs = {
           this.close();
         this._addPreview(tab);
         break;
+      case "TabUnpinned":
+        // A preview might already be there if all tabs were pinned
+        if (preview == null) {
+          if (this.isOpen)
+            this.close();
+          this._addPreview(tab);
+        } else if (gPrefService.getBoolPref("browser.allTabs.hide_pinned")) {
+          Array.forEach(gBrowser.tabs, function (t) {
+            if (t != tab)
+              this._removePreview(t);
+          }, this);
+        }
+        break;
       case "TabMove":
         let siblingPreview = tab.nextSibling &&
                              this._getPreview(tab.nextSibling);
@@ -768,6 +799,23 @@ var allTabs = {
         break;
       case "TabClose":
         this._removePreview(preview);
+        if (this.previews.length == 0 && gPrefService.getBoolPref("browser.allTabs.hide_pinned")) {
+          Array.forEach(gBrowser.tabs, function (t) {
+            this._addPreview(t);
+          }, this);
+        }
+        break;
+      case "TabPinned":
+        if (gPrefService.getBoolPref("browser.allTabs.hide_pinned")) {
+          if (this.previews.length > 1) {
+            this._removePreview(preview);
+          } else {
+            Array.forEach(gBrowser.tabs, function (t) {
+              if (t != tab)
+                this._addPreview(t);
+            }, this);
+          }
+        }
         break;
       case "keypress":
         this._onKeyPress(event);
