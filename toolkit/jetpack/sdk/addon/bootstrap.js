@@ -89,7 +89,7 @@ Bootstrap.prototype = {
     const reason = REASON[reasonCode];
 
     spawn(function*() {
-      const metadata = JSON.parse(yield readURI(`${rootURI}package.json`));
+      const metadata = JSON.parse(yield readURI(`${rootURI}extension.json`));
       const domain = readDomain(id);
       const baseURI = `resource://${domain}/`;
 
@@ -124,7 +124,7 @@ Bootstrap.prototype = {
       });
       this.loader = loader;
 
-      const module = Module("package.json", `${baseURI}package.json`);
+      const module = Module("extension.json", `${baseURI}extension.json`);
       const require = Require(loader, module);
       const main = command === "test" ? "sdk/test/runner" : null;
       const prefsURI = `${baseURI}defaults/preferences/prefs.js`;
