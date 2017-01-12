@@ -34,6 +34,10 @@
   color: #909090;
 }
 
+#detailsBox > description > .text-link {
+  color: #994D00;
+}
+
 #PMtrademark {
   font-size: xx-small;
   text-align: center;
