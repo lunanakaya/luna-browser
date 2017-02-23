@@ -77,7 +77,7 @@ this.CryptoUtils = {
   },
 
   /**
-   * UTF-8 encode a message and perform a SHA-1 over it.
+   * UTF-8 encode a message and perform a SHA-1 or SHA-256 over it.
    *
    * @param message
    *        (string) Buffer to perform operation on. Should be a JS string.
@@ -86,14 +86,22 @@ this.CryptoUtils = {
    *                 such data and thus should not be using this function.
    *
    * @return string
-   *         Raw bytes constituting SHA-1 hash. Value is a JS string. Each
-   *         character is the byte value for that offset. Returned string
-   *         always has .length == 20.
+   *         Raw bytes constituting SHA-1 or SHA-256 hash. Value is a JS string.
+   *         Each character is the byte value for that offset. Returned string
+   *         always has .length == 20 or 32.
    */
   UTF8AndSHA1: function UTF8AndSHA1(message) {
     let hasher = Cc["@mozilla.org/security/hash;1"]
                  .createInstance(Ci.nsICryptoHash);
     hasher.init(hasher.SHA1);
+
+    return CryptoUtils.digestUTF8(message, hasher);
+  },
+
+  UTF8AndSHA256: function UTF8AndSHA256(message) {
+    let hasher = Cc["@mozilla.org/security/hash;1"]
+                 .createInstance(Ci.nsICryptoHash);
+    hasher.init(hasher.SHA256);
 
     return CryptoUtils.digestUTF8(message, hasher);
   },
@@ -104,6 +112,14 @@ this.CryptoUtils = {
 
   sha1Base32: function sha1Base32(message) {
     return CommonUtils.encodeBase32(CryptoUtils.UTF8AndSHA1(message));
+  },
+
+  sha256: function sha256(message) {
+    return CommonUtils.bytesAsHex(CryptoUtils.UTF8AndSHA256(message));
+  },
+
+  sha256Base32: function sha256Base32(message) {
+    return CommonUtils.encodeBase32(CryptoUtils.UTF8AndSHA256(message));
   },
 
   /**
@@ -180,9 +196,8 @@ this.CryptoUtils = {
                        hmacAlg=Ci.nsICryptoHMAC.SHA1, hmacLen=20) {
 
     // We don't have a default in the algo itself, as NSS does.
-    // Use the constant.
     if (!dkLen) {
-      dkLen = SYNC_KEY_DECODED_LENGTH;
+      throw new Error("dkLen should be defined");
     }
 
     function F(S, c, i, h) {
