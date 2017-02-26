@@ -55,7 +55,6 @@ var security = {
         cAName : issuerName,
         encryptionAlgorithm : undefined,
         encryptionStrength : undefined,
-        encryptionSuite : undefined,
         version: undefined,
         isBroken : isBroken,
         isMixed : isMixed,
@@ -66,9 +65,8 @@ var security = {
 
       var version;
       try {
-        retval.encryptionAlgorithm = status.cipherName; //FIXME: contains suite.
+        retval.encryptionAlgorithm = status.cipherSuite;
         retval.encryptionStrength = status.secretKeyLength;
-        retval.encryptionSuite = status.cipherName; //status.cipherSuite
         version = status.protocolVersion;
       }
       catch (e) {
@@ -96,7 +94,6 @@ var security = {
         cAName : "",
         encryptionAlgorithm : "",
         encryptionStrength : 0,
-        encryptionSuite : "",
         version: "",
         isBroken : isBroken,
         isMixed : isMixed,
@@ -269,7 +266,7 @@ function securityOnLoad() {
 
   if (info.isBroken) {
     if (info.isMixed) {
-    hdr = pkiBundle.getString("pageInfo_MixedContent");
+      hdr = pkiBundle.getString("pageInfo_MixedContent");
     } else {
       hdr = pkiBundle.getFormattedString("pageInfo_BrokenEncryption",
                                          [info.encryptionAlgorithm,
