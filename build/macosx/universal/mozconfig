@@ -3,9 +3,6 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 # i386/x86-64 Universal Build mozconfig
-
-# As used here, arguments in $MOZ_BUILD_PROJECTS are suitable as arguments
-# to gcc's -arch parameter.
-mk_add_options MOZ_BUILD_PROJECTS="i386 x86_64"
+# i386 removed because no reasonable Mac is 32-bit anymore.
 
 . $topsrcdir/build/macosx/universal/mozconfig.common
