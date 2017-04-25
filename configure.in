@@ -6762,10 +6762,10 @@ dnl = Enable full jemalloc lib
 dnl ========================================================
 MOZ_ARG_ENABLE_BOOL(jemalloc-lib,
 [  --enable-jemalloc-lib       Use the full jemalloc lib],
-    MOZ_JEMALLOC3=1,
+    MOZ_JEMALLOC3=force,
     MOZ_JEMALLOC3= )
 
-if test -n "$MOZ_JEMALLOC3" -a -z "$MOZ_MEMORY"; then
+if test "$MOZ_JEMALLOC3" = "force" -a -z "$MOZ_MEMORY"; then
     dnl We need jemalloc enabled to use jemalloc3
     AC_MSG_ERROR([--enable-jemalloc-lib requires --enable-jemalloc])
 fi
