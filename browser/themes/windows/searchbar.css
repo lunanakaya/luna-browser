@@ -51,6 +51,15 @@
   -moz-image-region: rect(0, 26px, 11px, 13px);
 }
 
+/* TODO implement indicator for availability of search engines.
+.searchbar-engine-button[addengines="true"] > .button-box {
+  background: transparent url(chrome://browser/skin/Search-addengines.png) no-repeat right center;
+}
+
+.searchbar-engine-button[addengines="true"]:-moz-locale-dir(rtl) > .button-box {
+  background-position: left center;
+}
+*/
 
 /* ::::: search-go-button ::::: */
 

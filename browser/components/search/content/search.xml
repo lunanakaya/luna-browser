@@ -249,6 +249,7 @@
               }
             }
           }
+          BrowserSearch.updateSearchButton();
         ]]></body>
       </method>
 
@@ -276,6 +277,7 @@
               }
             }
           }
+          BrowserSearch.updateSearchButton();
         ]]></body>
       </method>
 
