@@ -1179,6 +1179,6 @@ BookmarkExporter.prototype = {
     let descriptionAnno = aItem.annos &&
                           aItem.annos.find(anno => anno.name == DESCRIPTION_ANNO);
     if (descriptionAnno)
-      this._writeLine(aIndent + "<DD>" + escapeHtmlEntities(descriptionAnno.value));
+      this._writeLine(aIndent + "<DD>" + escapeHtmlEntities(descriptionAnno.value) + "</DD>");
   }
 };
