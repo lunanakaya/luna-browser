@@ -320,10 +320,6 @@ mozJSSubScriptLoader::DoLoadSubScriptWithOptions(const nsAString& url,
         return NS_ERROR_FAILURE;
     }
 
-    // Suppress caching if we're compiling as content.
-    StartupCache* cache = (principal == mSystemPrincipal)
-                          ? StartupCache::GetSingleton()
-                          : nullptr;
     nsCOMPtr<nsIIOService> serv = do_GetService(NS_IOSERVICE_CONTRACTID);
     if (!serv) {
         return ReportError(cx, LOAD_ERROR_NOSERVICE);
@@ -346,7 +342,8 @@ mozJSSubScriptLoader::DoLoadSubScriptWithOptions(const nsAString& url,
         return ReportError(cx, LOAD_ERROR_NOSCHEME, uri);
     }
 
-    if (!scheme.EqualsLiteral("chrome") && !scheme.EqualsLiteral("app")) {
+    if (!scheme.EqualsLiteral("chrome") && !scheme.EqualsLiteral("app") &&
+        !scheme.EqualsLiteral("blob")) {
         // This might be a URI to a local file, though!
         nsCOMPtr<nsIURI> innerURI = NS_GetInnermostURI(uri);
         nsCOMPtr<nsIFileURL> fileURL = do_QueryInterface(innerURI);
@@ -362,6 +359,12 @@ mozJSSubScriptLoader::DoLoadSubScriptWithOptions(const nsAString& url,
 
         uriStr = tmp;
     }
+
+    // Suppress caching if we're compiling as content or if we're loading a
+    // blob: URI.
+    bool ignoreCache = principal != mSystemPrincipal ||
+                       scheme.EqualsLiteral("blob");
+    StartupCache* cache = ignoreCache ? nullptr : StartupCache::GetSingleton();
 
     bool writeScript = false;
     JSVersion version = JS_GetVersion(cx);
