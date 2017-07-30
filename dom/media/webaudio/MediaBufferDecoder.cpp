@@ -243,14 +243,14 @@ MediaDecodeTask::Decode()
 {
   MOZ_ASSERT(!NS_IsMainThread());
 
-  mBufferDecoder->BeginDecoding(mDecoderReader->GetTaskQueue());
+  mBufferDecoder->BeginDecoding(mDecoderReader->TaskQueue());
 
   // Tell the decoder reader that we are not going to play the data directly,
   // and that we should not reject files with more channels than the audio
   // backend support.
   mDecoderReader->SetIgnoreAudioOutputFormat();
 
-  mDecoderReader->AsyncReadMetadata()->Then(mDecoderReader->GetTaskQueue(), __func__, this,
+  mDecoderReader->AsyncReadMetadata()->Then(mDecoderReader->TaskQueue(), __func__, this,
                                        &MediaDecodeTask::OnMetadataRead,
                                        &MediaDecodeTask::OnMetadataNotRead);
 }
@@ -279,7 +279,7 @@ MediaDecodeTask::OnMetadataNotRead(ReadMetadataFailureReason aReason)
 void
 MediaDecodeTask::RequestSample()
 {
-  mDecoderReader->RequestAudioData()->Then(mDecoderReader->GetTaskQueue(), __func__, this,
+  mDecoderReader->RequestAudioData()->Then(mDecoderReader->TaskQueue(), __func__, this,
                                            &MediaDecodeTask::SampleDecoded,
                                            &MediaDecodeTask::SampleNotDecoded);
 }
@@ -501,7 +501,7 @@ AsyncDecodeWebAudio(const char* aContentType, uint8_t* aBuffer,
                            WebAudioDecodeJob::UnknownError);
     NS_DispatchToMainThread(event);
   } else {
-    task->Reader()->GetTaskQueue()->Dispatch(task);
+    task->Reader()->TaskQueue()->Dispatch(task);
   }
 }
 
