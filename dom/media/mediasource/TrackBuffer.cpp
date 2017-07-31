@@ -701,7 +701,7 @@ TrackBuffer::OnMetadataRead(MetadataHolder* aMetadata,
                             SourceBufferDecoder* aDecoder,
                             bool aWasEnded)
 {
-  MOZ_ASSERT(aDecoder->GetReader()->OnTaskQueue());IsCurrentThreadIn());
+  MOZ_ASSERT(aDecoder->GetReader()->OnTaskQueue());
 
   mParentDecoder->GetReentrantMonitor().AssertNotCurrentThreadIn();
   ReentrantMonitorAutoEnter mon(mParentDecoder->GetReentrantMonitor());
