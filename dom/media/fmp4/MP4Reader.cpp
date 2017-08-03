@@ -146,8 +146,8 @@ InvokeAndRetry(ThisType* aThisVal, ReturnType(ThisType::*aMethod)(), MP4Stream* 
   }
 }
 
-MP4Reader::MP4Reader(AbstractMediaDecoder* aDecoder)
-  : MediaDecoderReader(aDecoder)
+MP4Reader::MP4Reader(AbstractMediaDecoder* aDecoder, MediaTaskQueue* aBorrowedTaskQueue)
+  : MediaDecoderReader(aDecoder, aBorrowedTaskQueue)
   , mAudio(MediaData::AUDIO_DATA, Preferences::GetUint("media.mp4-audio-decode-ahead", 2))
   , mVideo(MediaData::VIDEO_DATA, Preferences::GetUint("media.mp4-video-decode-ahead", 2))
   , mLastReportedNumDecodedFrames(0)
@@ -174,7 +174,7 @@ MP4Reader::~MP4Reader()
 nsRefPtr<ShutdownPromise>
 MP4Reader::Shutdown()
 {
-  MOZ_ASSERT(GetTaskQueue()->IsCurrentThreadIn());
+  MOZ_ASSERT(OnTaskQueue());
 
   if (mAudio.mDecoder) {
     Flush(TrackInfo::kAudioTrack);
@@ -557,7 +557,7 @@ nsRefPtr<MediaDecoderReader::VideoDataPromise>
 MP4Reader::RequestVideoData(bool aSkipToNextKeyframe,
                             int64_t aTimeThreshold)
 {
-  MOZ_ASSERT(GetTaskQueue()->IsCurrentThreadIn());
+  MOZ_ASSERT(OnTaskQueue());
   VLOG("skip=%d time=%lld", aSkipToNextKeyframe, aTimeThreshold);
 
   if (!EnsureDecodersSetup()) {
@@ -598,7 +598,7 @@ MP4Reader::RequestVideoData(bool aSkipToNextKeyframe,
 nsRefPtr<MediaDecoderReader::AudioDataPromise>
 MP4Reader::RequestAudioData()
 {
-  MOZ_ASSERT(GetTaskQueue()->IsCurrentThreadIn());
+  MOZ_ASSERT(OnTaskQueue());
   VLOG("");
 
   if (!EnsureDecodersSetup()) {
@@ -629,7 +629,7 @@ MP4Reader::ScheduleUpdate(TrackType aTrack)
   decoder.mUpdateScheduled = true;
   RefPtr<nsIRunnable> task(
     NS_NewRunnableMethodWithArg<TrackType>(this, &MP4Reader::Update, aTrack));
-  GetTaskQueue()->Dispatch(task.forget());
+  TaskQueue()->Dispatch(task.forget());
 }
 
 bool
@@ -653,7 +653,7 @@ MP4Reader::NeedInput(DecoderData& aDecoder)
 void
 MP4Reader::Update(TrackType aTrack)
 {
-  MOZ_ASSERT(GetTaskQueue()->IsCurrentThreadIn());
+  MOZ_ASSERT(OnTaskQueue());
 
   if (mShutdown) {
     return;
@@ -819,7 +819,7 @@ MP4Reader::SizeOfQueue(TrackType aTrack)
 nsresult
 MP4Reader::ResetDecode()
 {
-  MOZ_ASSERT(GetTaskQueue()->IsCurrentThreadIn());
+  MOZ_ASSERT(OnTaskQueue());
   Flush(TrackInfo::kVideoTrack);
   {
     MonitorAutoLock mon(mDemuxerMonitor);
@@ -901,7 +901,7 @@ MP4Reader::Error(TrackType aTrack)
 void
 MP4Reader::Flush(TrackType aTrack)
 {
-  MOZ_ASSERT(GetTaskQueue()->IsCurrentThreadIn());
+  MOZ_ASSERT(OnTaskQueue());
   VLOG("Flush(%s) BEGIN", TrackTypeToStr(aTrack));
   DecoderData& data = GetDecoderData(aTrack);
   if (!data.mDecoder) {
@@ -939,7 +939,7 @@ MP4Reader::Flush(TrackType aTrack)
 bool
 MP4Reader::SkipVideoDemuxToNextKeyFrame(int64_t aTimeThreshold, uint32_t& parsed)
 {
-  MOZ_ASSERT(GetTaskQueue()->IsCurrentThreadIn());
+  MOZ_ASSERT(OnTaskQueue());
 
   MOZ_ASSERT(mVideo.mDecoder);
 
@@ -970,7 +970,7 @@ nsRefPtr<MediaDecoderReader::SeekPromise>
 MP4Reader::Seek(int64_t aTime, int64_t aEndTime)
 {
   LOG("aTime=(%lld)", aTime);
-  MOZ_ASSERT(GetTaskQueue()->IsCurrentThreadIn());
+  MOZ_ASSERT(OnTaskQueue());
   MonitorAutoLock mon(mDemuxerMonitor);
   if (!mDemuxer->CanSeek()) {
     VLOG("Seek() END (Unseekable)");

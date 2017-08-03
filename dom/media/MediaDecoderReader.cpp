@@ -64,14 +64,18 @@ public:
   size_t mSize;
 };
 
-MediaDecoderReader::MediaDecoderReader(AbstractMediaDecoder* aDecoder)
+MediaDecoderReader::MediaDecoderReader(AbstractMediaDecoder* aDecoder,
+                                       MediaTaskQueue* aBorrowedTaskQueue)
   : mAudioCompactor(mAudioQueue)
   , mDecoder(aDecoder)
+  , mTaskQueue(aBorrowedTaskQueue ? aBorrowedTaskQueue
+                                  : new MediaTaskQueue(GetMediaThreadPool(MediaThreadType::PLAYBACK),
+                                                       /* aSupportsTailDispatch = */ true))
   , mIgnoreAudioOutputFormat(false)
   , mStartTime(-1)
   , mHitAudioDecodeError(false)
   , mShutdown(false)
-  , mTaskQueueIsBorrowed(false)
+  , mTaskQueueIsBorrowed(!!aBorrowedTaskQueue)
   , mAudioDiscontinuity(false)
   , mVideoDiscontinuity(false)
 {
@@ -225,7 +229,7 @@ public:
 
   NS_METHOD Run()
   {
-    MOZ_ASSERT(mReader->GetTaskQueue()->IsCurrentThreadIn());
+    MOZ_ASSERT(mReader->OnTaskQueue());
 
     // Make sure ResetDecode hasn't been called in the mean time.
     if (!mReader->mBaseVideoPromise.IsEmpty()) {
@@ -250,7 +254,7 @@ public:
 
   NS_METHOD Run()
   {
-    MOZ_ASSERT(mReader->GetTaskQueue()->IsCurrentThreadIn());
+    MOZ_ASSERT(mReader->OnTaskQueue());
 
     // Make sure ResetDecode hasn't been called in the mean time.
     if (!mReader->mBaseAudioPromise.IsEmpty()) {
@@ -335,19 +339,6 @@ MediaDecoderReader::RequestAudioData()
   return p;
 }
 
-MediaTaskQueue*
-MediaDecoderReader::EnsureTaskQueue()
-{
-  if (!mTaskQueue) {
-    MOZ_ASSERT(!mTaskQueueIsBorrowed);
-    RefPtr<SharedThreadPool> pool(GetMediaThreadPool(MediaThreadType::PLAYBACK));
-    MOZ_DIAGNOSTIC_ASSERT(pool);
-    mTaskQueue = new MediaTaskQueue(pool.forget());
-  }
-
-  return mTaskQueue;
-}
-
 void
 MediaDecoderReader::BreakCycles()
 {
@@ -368,7 +359,7 @@ MediaDecoderReader::Shutdown()
 
   // Spin down the task queue if necessary. We wait until BreakCycles to null
   // out mTaskQueue, since otherwise any remaining tasks could crash when they
-  // invoke GetTaskQueue()->IsCurrentThreadIn().
+  // invoke OnTaskQueue().
   if (mTaskQueue && !mTaskQueueIsBorrowed) {
     // If we own our task queue, shutdown ends when the task queue is done.
     p = mTaskQueue->BeginShutdown();
