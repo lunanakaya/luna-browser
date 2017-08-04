@@ -119,6 +119,8 @@ interface NavigatorGeolocation {
 Navigator implements NavigatorGeolocation;
 
 // http://www.w3.org/TR/battery-status/#navigatorbattery-interface
+// XXXstroucki battery comment this junk
+/*
 [NoInterfaceObject]
 interface NavigatorBattery {
     // XXXbz Per spec this should be non-nullable, but we return null in
@@ -127,6 +129,7 @@ interface NavigatorBattery {
     readonly attribute BatteryManager? battery;
 };
 Navigator implements NavigatorBattery;
+*/
 
 // https://wiki.mozilla.org/WebAPI/DataStore
 [NoInterfaceObject,

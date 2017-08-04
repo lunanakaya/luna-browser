@@ -52,7 +52,9 @@ BatteryManager::Shutdown()
 JSObject*
 BatteryManager::WrapObject(JSContext* aCx)
 {
-  return BatteryManagerBinding::Wrap(aCx, this);
+// XXXstroucki battery not getting it
+return nullptr;
+  //return BatteryManagerBinding::Wrap(aCx, this);
 }
 
 double

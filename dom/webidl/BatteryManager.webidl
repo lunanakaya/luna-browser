@@ -10,6 +10,8 @@
  * liability, trademark and document use rules apply.
  */
 
+// XXXstroucki battery comment this junk
+/*
 interface BatteryManager : EventTarget {
     readonly attribute boolean             charging;
     readonly attribute unrestricted double chargingTime;
@@ -21,3 +23,4 @@ interface BatteryManager : EventTarget {
              attribute EventHandler        ondischargingtimechange;
              attribute EventHandler        onlevelchange;
 };
+*/
