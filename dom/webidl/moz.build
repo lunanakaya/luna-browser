@@ -48,7 +48,6 @@ WEBIDL_FILES = [
     'AudioTrackList.webidl',
     'AutocompleteInfo.webidl',
     'BarProp.webidl',
-    'BatteryManager.webidl',
     'BeforeAfterKeyboardEvent.webidl',
     'BeforeUnloadEvent.webidl',
     'BiquadFilterNode.webidl',

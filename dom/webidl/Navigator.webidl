@@ -7,7 +7,6 @@
  * http://www.whatwg.org/specs/web-apps/current-work/#the-navigator-object
  * http://www.w3.org/TR/tracking-dnt/
  * http://www.w3.org/TR/geolocation-API/#geolocation_interface
- * http://www.w3.org/TR/battery-status/#navigatorbattery-interface
  * http://www.w3.org/TR/vibration/#vibration-interface
  * http://www.w3.org/2012/sysapps/runtime/#extension-to-the-navigator-interface-1
  * https://dvcs.w3.org/hg/gamepad/raw-file/default/gamepad.html#navigator-interface-extension
@@ -117,19 +116,6 @@ interface NavigatorGeolocation {
   readonly attribute Geolocation geolocation;
 };
 Navigator implements NavigatorGeolocation;
-
-// http://www.w3.org/TR/battery-status/#navigatorbattery-interface
-// XXXstroucki battery comment this junk
-/*
-[NoInterfaceObject]
-interface NavigatorBattery {
-    // XXXbz Per spec this should be non-nullable, but we return null in
-    // torn-down windows.  See bug 884925.
-    [Throws, Pref="dom.battery.enabled"]
-    readonly attribute BatteryManager? battery;
-};
-Navigator implements NavigatorBattery;
-*/
 
 // https://wiki.mozilla.org/WebAPI/DataStore
 [NoInterfaceObject,
