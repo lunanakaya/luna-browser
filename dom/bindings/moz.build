@@ -42,7 +42,6 @@ MSVC_ENABLE_PGO = True
 
 LOCAL_INCLUDES += [
     '/dom/base',
-    '/dom/battery',
     '/dom/bluetooth',
     '/dom/camera',
     '/dom/canvas',

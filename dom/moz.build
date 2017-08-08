@@ -45,7 +45,6 @@ DIRS += [
     'archivereader',
     'requestsync',
     'bindings',
-    'battery',
     'browser-element',
     'canvas',
     'cellbroadcast',

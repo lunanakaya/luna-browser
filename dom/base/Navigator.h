@@ -52,10 +52,6 @@ class nsIDOMMozIccManager;
 namespace mozilla {
 namespace dom {
 
-namespace battery {
-class BatteryManager;
-} // namespace battery
-
 #ifdef MOZ_B2G_FM
 class FMRadio;
 #endif
@@ -154,7 +150,6 @@ public:
   nsPluginArray* GetPlugins(ErrorResult& aRv);
   // The XPCOM GetDoNotTrack is ok
   Geolocation* GetGeolocation(ErrorResult& aRv);
-  battery::BatteryManager* GetBattery(ErrorResult& aRv);
 
   static already_AddRefed<Promise> GetDataStores(nsPIDOMWindow* aWindow,
                                                  const nsAString& aName,
@@ -337,7 +332,6 @@ private:
   nsRefPtr<nsPluginArray> mPlugins;
   nsRefPtr<Geolocation> mGeolocation;
   nsRefPtr<DesktopNotificationCenter> mNotification;
-  nsRefPtr<battery::BatteryManager> mBatteryManager;
 #ifdef MOZ_B2G_FM
   nsRefPtr<FMRadio> mFMRadio;
 #endif

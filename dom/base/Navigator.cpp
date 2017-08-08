@@ -31,7 +31,6 @@
 #include "nsUnicharUtils.h"
 #include "mozilla/Preferences.h"
 #include "mozilla/Telemetry.h"
-#include "BatteryManager.h"
 #include "mozilla/dom/PowerManager.h"
 #include "mozilla/dom/WakeLock.h"
 #include "mozilla/dom/power/PowerManagerService.h"
@@ -170,7 +169,6 @@ NS_IMPL_CYCLE_COLLECTION_TRAVERSE_BEGIN(Navigator)
   NS_IMPL_CYCLE_COLLECTION_TRAVERSE(mMimeTypes)
   NS_IMPL_CYCLE_COLLECTION_TRAVERSE(mGeolocation)
   NS_IMPL_CYCLE_COLLECTION_TRAVERSE(mNotification)
-  NS_IMPL_CYCLE_COLLECTION_TRAVERSE(mBatteryManager)
   NS_IMPL_CYCLE_COLLECTION_TRAVERSE(mPowerManager)
   NS_IMPL_CYCLE_COLLECTION_TRAVERSE(mCellBroadcast)
   NS_IMPL_CYCLE_COLLECTION_TRAVERSE(mMobileMessageManager)
@@ -223,11 +221,6 @@ Navigator::Invalidate()
   if (mNotification) {
     mNotification->Shutdown();
     mNotification = nullptr;
-  }
-
-  if (mBatteryManager) {
-    mBatteryManager->Shutdown();
-    mBatteryManager = nullptr;
   }
 
 #ifdef MOZ_B2G_FM
@@ -1347,27 +1340,6 @@ Navigator::GetMozFMRadio(ErrorResult& aRv)
 }
 
 #endif  // MOZ_B2G_FM
-
-//*****************************************************************************
-//    Navigator::nsINavigatorBattery
-//*****************************************************************************
-
-battery::BatteryManager*
-Navigator::GetBattery(ErrorResult& aRv)
-{
-  if (!mBatteryManager) {
-    if (!mWindow) {
-      aRv.Throw(NS_ERROR_UNEXPECTED);
-      return nullptr;
-    }
-    NS_ENSURE_TRUE(mWindow->GetDocShell(), nullptr);
-
-    mBatteryManager = new battery::BatteryManager(mWindow);
-    mBatteryManager->Init();
-  }
-
-  return mBatteryManager;
-}
 
 /* static */ already_AddRefed<Promise>
 Navigator::GetDataStores(nsPIDOMWindow* aWindow,

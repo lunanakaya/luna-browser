@@ -14,7 +14,6 @@
 #include "mozilla/Types.h"
 #include "nsTArray.h"
 #include "mozilla/dom/MozPowerManagerBinding.h"
-#include "mozilla/dom/battery/Types.h"
 #include "mozilla/dom/network/Types.h"
 #include "mozilla/dom/power/Types.h"
 #include "mozilla/hal_sandbox/PHal.h"
@@ -87,29 +86,6 @@ void Vibrate(const nsTArray<uint32_t>& pattern,
  */
 void CancelVibrate(nsIDOMWindow* aWindow);
 void CancelVibrate(const hal::WindowIdentifier &id);
-
-/**
- * Inform the battery backend there is a new battery observer.
- * @param aBatteryObserver The observer that should be added.
- */
-void RegisterBatteryObserver(BatteryObserver* aBatteryObserver);
-
-/**
- * Inform the battery backend a battery observer unregistered.
- * @param aBatteryObserver The observer that should be removed.
- */
-void UnregisterBatteryObserver(BatteryObserver* aBatteryObserver);
-
-/**
- * Returns the current battery information.
- */
-void GetCurrentBatteryInformation(hal::BatteryInformation* aBatteryInfo);
-
-/**
- * Notify of a change in the battery state.
- * @param aBatteryInfo The new battery information.
- */
-void NotifyBatteryChange(const hal::BatteryInformation& aBatteryInfo);
 
 /**
  * Determine whether the device's screen is currently enabled.
