@@ -458,7 +458,6 @@ let AboutPermissions = {
   /**
    * When adding sites to the dom sites-list, divide workload into intervals.
    */
-  LIST_BUILD_CHUNK: 5, // interval size
   LIST_BUILD_DELAY: 100, // delay between intervals
 
   /**
@@ -846,9 +845,6 @@ let AboutPermissions = {
     try {
       let logins = Services.logins.getAllLogins();
       logins.forEach(function(aLogin) {
-        if (itemCnt % this.LIST_BUILD_CHUNK == 0) {
-          yield true;
-        }
         try {
           // aLogin.hostname is a string in origin URL format
           // (e.g. "http://foo.com").
@@ -862,9 +858,6 @@ let AboutPermissions = {
 
       let disabledHosts = Services.logins.getAllDisabledHosts();
       disabledHosts.forEach(function(aHostname) {
-        if (itemCnt % this.LIST_BUILD_CHUNK == 0) {
-          yield true;
-        }
         try {
           // aHostname is a string in origin URL format (e.g. "http://foo.com").
           let uri = NetUtil.newURI(aHostname);
@@ -882,9 +875,6 @@ let AboutPermissions = {
 
     let enumerator = Services.perms.enumerator;
     while (enumerator.hasMoreElements()) {
-      if (itemCnt % this.LIST_BUILD_CHUNK == 0) {
-        yield true;
-      }
       let permission = enumerator.getNext().QueryInterface(Ci.nsIPermission);
       // Only include sites with exceptions set for supported permission types.
       if (this._supportedPermissions.indexOf(permission.type) != -1) {
