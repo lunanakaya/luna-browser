@@ -866,10 +866,15 @@ let AboutPermissions = {
     let itemCnt = 1;
 
     try {
-      // XXX:
-      // let logins = Services.logins.getAllLogins();
-      // Throws: "Invalid chrome URI: /"
-      // https://bugzilla.mozilla.org/show_bug.cgi?id=1291346
+      /*
+      XXX:
+      let logins = Services.logins.getAllLogins();
+      Throws: "Invalid chrome URI: /"
+      (in NetUtil.newURI)
+      See also:
+      https://bugzilla.mozilla.org/show_bug.cgi?id=1283994
+      https://bugzilla.mozilla.org/show_bug.cgi?id=1291346
+      */
       let logins = Services.logins.searchLogins({}, this.newPropertyBag({
         httpRealm: null,
       }));
