@@ -858,7 +858,7 @@ let AboutPermissions = {
                       .QueryInterface(Ci.nsIWritablePropertyBag2);
   },
 
-   /**
+  /**
    * Finds sites that have non-default permissions and creates Site objects
    * for them if they are not already stored in _sites.
    */
