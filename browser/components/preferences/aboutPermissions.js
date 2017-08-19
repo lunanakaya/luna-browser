@@ -836,6 +836,29 @@ let AboutPermissions = {
   },
 
   /**
+   * Returns a new XPCOM property bag with the provided properties.
+   *
+   * @param aProperties
+   *        Each property of this object is copied to the property bag.
+   *        This parameter can be omitted to return an empty property bag.
+   *
+   * @return A new property bag, that is an instance of nsIWritablePropertyBag,
+   *         nsIWritablePropertyBag2, nsIPropertyBag, and nsIPropertyBag2.
+   */
+  newPropertyBag: function(aProperties) {
+    let propertyBag = Cc["@mozilla.org/hash-property-bag;1"]
+                        .createInstance(Ci.nsIWritablePropertyBag);
+    if (aProperties) {
+      for (let [name, value] of Iterator(aProperties)) {
+        propertyBag.setProperty(name, value);
+      }
+    }
+    return propertyBag.QueryInterface(Ci.nsIPropertyBag)
+                      .QueryInterface(Ci.nsIPropertyBag2)
+                      .QueryInterface(Ci.nsIWritablePropertyBag2);
+  },
+
+   /**
    * Finds sites that have non-default permissions and creates Site objects
    * for them if they are not already stored in _sites.
    */
@@ -843,7 +866,13 @@ let AboutPermissions = {
     let itemCnt = 1;
 
     try {
-      let logins = Services.logins.getAllLogins();
+      // XXX:
+      // let logins = Services.logins.getAllLogins();
+      // Throws: "Invalid chrome URI: /"
+      // https://bugzilla.mozilla.org/show_bug.cgi?id=1291346
+      let logins = Services.logins.searchLogins({}, this.newPropertyBag({
+        httpRealm: null,
+      }));
       logins.forEach(function(aLogin) {
         try {
           // aLogin.hostname is a string in origin URL format
