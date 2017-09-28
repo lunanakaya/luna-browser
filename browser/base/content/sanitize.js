@@ -365,7 +365,7 @@ Sanitizer.prototype = {
         return true;
       }
     },
-    
+
     siteSettings: {
       clear: function ()
       {
@@ -373,12 +373,12 @@ Sanitizer.prototype = {
         var pm = Components.classes["@mozilla.org/permissionmanager;1"]
                            .getService(Components.interfaces.nsIPermissionManager);
         pm.removeAll();
-        
+
         // Clear site-specific settings like page-zoom level
         var cps = Components.classes["@mozilla.org/content-pref/service;1"]
                             .getService(Components.interfaces.nsIContentPrefService2);
         cps.removeAllDomains(null);
-        
+
         // Clear "Never remember passwords for this site", which is not handled by
         // the permission manager
         var pwmgr = Components.classes["@mozilla.org/login-manager;1"]
@@ -387,8 +387,13 @@ Sanitizer.prototype = {
         for each (var host in hosts) {
           pwmgr.setLoginSavingEnabled(host, true);
         }
+
+        // Clear site security settings
+        var sss = Components.classes["@mozilla.org/ssservice;1"]
+                    .getService(Components.interfaces.nsISiteSecurityService);
+        sss.clearAll();
       },
-      
+
       get canClear()
       {
         return true;
