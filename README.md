@@ -9,4 +9,5 @@ mostly laid out like Mozilla-based products.
  * [Mozilla Source Code Directory Structure and links to project pages](https://developer.mozilla.org/en/Mozilla_Source_Code_Directory_Structure)
  * [Build Pale Moon for Windows](https://forum.palemoon.org/viewtopic.php?f=19&t=13556)
  * [Build Pale Moon for Linux](https://developer.palemoon.org/Developer_Guide:Build_Instructions/Pale_Moon/Linux)
+ * [Build Pale Moon for macOS](https://developer.palemoon.org/Developer_Guide:Build_Instructions/Pale_Moon/macOS)
  * [Pale Moon home page](http://www.palemoon.org/)
