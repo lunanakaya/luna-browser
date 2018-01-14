@@ -5087,7 +5087,7 @@ if test -n "$MOZ_WEBRTC"; then
     MOZ_RAW=1
     MOZ_VPX=1
     MOZ_VPX_ERROR_CONCEALMENT=1
-
+    
 dnl enable once Signaling lands
     MOZ_WEBRTC_SIGNALING=1
     AC_DEFINE(MOZ_WEBRTC_SIGNALING)
@@ -5101,9 +5101,15 @@ dnl enable once PeerConnection lands
     if test -n "$MOZ_X11"; then
       MOZ_WEBRTC_X11_LIBS="-lXext -lXdamage -lXfixes -lXcomposite"
     fi
+
+dnl Do not allow WebRTC to be built if MOZ_PHOENIX
+    if test -n "$MOZ_PHOENIX"; then
+        AC_ERROR("WebRTC is unsupported code and should not be built with the browser application. Please do not use --enable-webrtc with --enable-application=browser")
+    fi
 else
     MOZ_SYNTH_PICO=
 fi
+
 
 dnl ========================================================
 dnl = Force hardware AEC, disable webrtc.org AEC
