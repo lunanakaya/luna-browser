@@ -50,6 +50,7 @@ pref("@GUAO_PREF@.fonts.googleapis.com","Mozilla/5.0 (@OS_SLICE@ rv:43.0) @GK_SL
 
 // UA-Sniffing domains below are pending responses from their operators - temp workaround
 pref("@GUAO_PREF@.chase.com","Mozilla/5.0 (@OS_SLICE@ rv:@GK_VERSION@) @GK_SLICE@ @FX_SLICE@");
+pref("@GUAO_PREF@.nationstates.net", "Mozilla/5.0 (@OS_SLICE@ rv:@GK_VERSION@) @GK_SLICE@ @GRE_VERSION_SLICE@ @FX_SLICE@ @PM_SLICE@");
 // For Amazon Prime videos
 pref("@GUAO_PREF@.www.amazon.com","Mozilla/5.0 (@OS_SLICE@ rv:45.9) @GK_SLICE@ Firefox/45.9 (Pale Moon)");
 // Soundcloud uses Firefox-exclusive combinations of code. Never pass Firefox slice.
