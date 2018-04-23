@@ -14,9 +14,15 @@ var dateAndTimeFormatter = new Intl.DateTimeFormat(undefined,
 
 function SignonsStartup() {
   kSignonBundle = document.getElementById("signonBundle");
-  document.getElementById("togglePasswords").label = kSignonBundle.getString("showPasswords");
-  document.getElementById("togglePasswords").accessKey = kSignonBundle.getString("showPasswordsAccessKey");
-  document.getElementById("signonsIntro").textContent = kSignonBundle.getString("loginsSpielAll");
+  var toggleButton = document.getElementById("togglePasswords");
+  var introButton = document.getElementById("signonsIntro");
+  var removeAllButton = document.getElementById("removeAllSignons");
+
+  toggleButton.label = kSignonBundle.getString("showPasswords");
+  toggleButton.accesskey = kSignonBundle.getString("showPasswordsAccessKey");
+  introButton.textContent = kSignonBundle.getString("loginsSpielAll");
+  removeAllButton.setAttribute("label", kSignonBundle.getString("removeAll.label"));
+  removeAllButton.setAttribute("accesskey", kSignonBundle.getString("removeAll.accesskey"));
 
   let treecols = document.getElementsByTagName("treecols")[0];
   treecols.addEventListener("click", HandleTreeColumnClick.bind(null, SignonColumnSort));
@@ -274,6 +280,9 @@ function SignonClearFilter() {
   signonsTreeView._lastSelectedRanges = [];
 
   document.getElementById("signonsIntro").textContent = kSignonBundle.getString("loginsSpielAll");
+  var removeAllButton = document.getElementById("removeAllSignons");
+  removeAllButton.setAttribute("label", kSignonBundle.getString("removeAll.label"));
+  removeAllButton.setAttribute("accesskey", kSignonBundle.getString("removeAll.accesskey"));
 }
 
 function FocusFilterBox() {
@@ -344,6 +353,9 @@ function _filterPasswords()
     signonsTreeView.selection.select(0);
 
   document.getElementById("signonsIntro").textContent = kSignonBundle.getString("loginsSpielFiltered");
+  var removeAllButton = document.getElementById("removeAllSignons");
+  removeAllButton.setAttribute("label", kSignonBundle.getString("removeAllShown.label"));
+  removeAllButton.setAttribute("accesskey", kSignonBundle.getString("removeAllShown.accesskey"));
 }
 
 function CopyPassword() {
