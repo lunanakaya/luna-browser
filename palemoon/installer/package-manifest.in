@@ -230,9 +230,6 @@
 @RESPATH@/goanna.js
 @RESPATH@/defaults/autoconfig/prefcalls.js
 
-; Chrome examples
-@RESPATH@/browser/defaults/profile/chrome/*
-
 ; Warning: changing the path to channel-prefs.js can cause bugs (Bug 756325)
 ; Technically this is an app pref file, but we are keeping it in the original
 ; gre location for now.
