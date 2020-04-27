@@ -105,8 +105,8 @@ MOZ_PKG_MAC_EXTRA=--symlink '/Applications:/ '
 endif
 
 NON_OMNIJAR_FILES = \
-	defaults/profile/chrome/userChrome-example.css \
-	defaults/profile/chrome/userContent-example.css \
+	browser/defaults/profile/chrome/userChrome-example.css \
+	browser/defaults/profile/chrome/userContent-example.css \
 	$(NULL)
 
 ifndef LIBXUL_SDK
