@@ -2541,7 +2541,7 @@ xmlns="http://www.mozilla.org/2006/addons-blocklist">
     <emItem blockID="pm117" id="treestyletabforpm@oinkoink">
       <versionRange minVersion="0" maxVersion="0.0.5" severity="3">
       </versionRange>
-    <emItem>
+    </emItem>
   </emItems>
   <pluginItems>
     <pluginItem blockID="p26">
